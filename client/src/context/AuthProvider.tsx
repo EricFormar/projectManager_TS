@@ -1,5 +1,6 @@
 import { PropsWithChildren, createContext, useEffect, useState } from "react";
 import clientAxios from "../config/clientAxios";
+import axios from "axios";
 
 interface Auth {
     _id? : string,
@@ -50,6 +51,13 @@ const AuthProvider = ({children} : PropsWithChildren) => {
                 
             } catch (error) {
                 console.log(error);
+                if(error instanceof Error) {
+                    if(axios.isAxiosError(error) && error.response?.data.msg === "jwt expired"){
+                        error.response.data.msg = "Sesión expirada"
+                    }
+                    handleShowAlert( axios.isAxiosError(error)? error.response?.data.msg : error.message)
+                }
+
                 setAuth({})
                 
             } finally {

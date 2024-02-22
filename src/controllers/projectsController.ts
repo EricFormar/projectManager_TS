@@ -14,7 +14,7 @@ export const projectsList = async (req: Request, res: Response) => {
         return res.status(200).json({
             ok: true,
             msg: 'Lista de Proyectos',
-            data: projects
+            projects
         })
     } catch (error) {
         errorResponse(res, error, "PROJECT-LIST")
@@ -43,8 +43,8 @@ export const projectStore = async (req: Request, res: Response) => {
 
         return res.status(201).json({
             ok: true,
-            msg: 'Proyecto guardado',
-            data: projectStore
+            msg: 'Proyecto guardado con éxito',
+            project : projectStore
         })
 
     } catch (error) {
@@ -73,7 +73,7 @@ export const proejectDetail = async (req: Request, res: Response) => {
         return res.status(200).json({
             ok: true,
             msg: 'Detalle del Proyecto',
-            data: project
+            project
         })
     } catch (error) {
         console.log(error);
@@ -109,8 +109,8 @@ export const projectUpdate = async (req: Request, res: Response) => {
 
         return res.status(201).json({
             ok: true,
-            msg: 'Proyecto actualizado',
-            data : projectUpdate
+            msg: 'Proyecto actualizado correctamente',
+            project : projectUpdate
         })
     } catch (error) {
         console.log(error);

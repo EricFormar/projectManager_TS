@@ -1,6 +1,7 @@
 import Swal from "sweetalert2"
 
 type Icon = 'warning' | 'error' | 'success' | 'info' | 'question';
+type Position = 'top' | 'top-start' | 'top-end' | 'center' | 'center-start' | 'center-end' | 'bottom' | 'bottom-start' | 'bottom-end'
 
 type ShowMessageResponse =  (title: string, text : string, icon? : Icon, redirect? : () => void,) => void
 
@@ -16,7 +17,30 @@ export const showMessageResponse : ShowMessageResponse = (title, text, icon ='in
            redirect && redirect()
           }
     })
+}
+
+type ShowToastMessage = (
+    title : string,
+    position? : Position,
+    icon? : Icon,
+    showConfirmButton? : boolean,
+    timer? : number
+) => void
 
 
+export const showToastMessage : ShowToastMessage = (
+    title,
+    position = "top-end",
+    icon = "success",
+    showConfirmButton = false,
+    timer = 1500
 
+) => {
+    Swal.fire({
+        title,
+        position,
+        icon,
+        showConfirmButton,
+        timer
+      });
 }

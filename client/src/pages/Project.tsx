@@ -1,13 +1,34 @@
-import { Link } from "react-router-dom"
+import { useEffect } from "react";
+import { Link, useParams } from "react-router-dom"
+import useProject from "../hooks/useProject";
 
 
 const Project = () => {
 
+  const {id} = useParams();
+
+  const {getProject, project, loading} = useProject()
+
+  useEffect(() => {
+    getProject(id as string)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id])
+  
+
 
  return  (
+
+  loading
+  ?
+  <p>Cargando...</p>
+  :
         <>
           <div className='flex justify-between'>
-              <h1 className='font-black text-4xl'>{'Proyecto'}</h1>
+          <div>
+            <h1 className='font-black text-3xl'>{project.name}</h1>
+            <h2 className="text-gray-400 text-2xl">para {project.client}</h2>
+              <p>{project.description}</p>
+            </div>
 
             {true && (
               <div className='flex items-center gap-2 text-gray-400 hover:text-black'>
@@ -15,7 +36,7 @@ const Project = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                 </svg>
                 <Link 
-                  to={`/proyectos/editar/:id`}
+                  to={`/proyectos/editar/${project._id}`}
                   className='uppercase font-bold'
                 >Editar</Link>
               </div>
