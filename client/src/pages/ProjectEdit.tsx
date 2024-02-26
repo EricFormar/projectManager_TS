@@ -1,9 +1,14 @@
 import ProjectForm from "../components/ProjectForm"
 import useProject from "../hooks/useProject"
+import { showConfirmMessage } from "../utils";
 
 const ProjectEdit = () => {
 
-  const  {project} = useProject()
+  const  {project, deleteProject} = useProject();
+
+  const handleDelete = () => {
+    showConfirmMessage("¿Desea eliminar definitivamente el proyecto?", () => deleteProject(project._id), "warning", "Sí, eliminalo!")
+  }
 
     return (
         <>
@@ -17,6 +22,7 @@ const ProjectEdit = () => {
                     </svg>
                     <button
                         className='uppercase font-bold'
+                        onClick={handleDelete}
                     >Eliminar</button>
                   </div>
               </div>

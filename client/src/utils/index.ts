@@ -44,3 +44,26 @@ export const showToastMessage : ShowToastMessage = (
         timer
       });
 }
+
+
+type ShowConfirmMessage = (
+    title : string,
+    action : () => void,
+    icon? : Icon,
+    confirmButtonText? : string,
+    denyButtonText? : string,
+) => void
+
+export const showConfirmMessage : ShowConfirmMessage = (title, action, icon="question", confirmButtonText="Aceptar", denyButtonText="Cancelar") => {
+    Swal.fire({
+        title,
+        icon,
+        showDenyButton : true,
+        confirmButtonText,
+        denyButtonText
+      }).then((result) => {
+        if (result.isConfirmed) {
+          action()
+          }
+    })
+}

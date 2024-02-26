@@ -11,7 +11,7 @@ const ProjectForm = () => {
    
     const {id} = useParams();
     const {alert, handleShowAlert} = useAuth();
-    const {createProject, project} = useProject();
+    const {createProject, project, updateProject} = useProject();
 
     const {formValues, handleInputChange, reset} = useForm<FormDataProject>({
         name: id ? project.name : "",
@@ -33,7 +33,7 @@ const ProjectForm = () => {
             const now = new Date();
             if(new Date(dateExpire).getTime() < now.getTime())  throw new Error("La fecha de entrega no puede puede ser anterior a la actual")
 
-            createProject(formValues)
+            id ? updateProject(formValues, id) : createProject(formValues)
             reset()
             
         } catch (error) {
