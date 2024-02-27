@@ -1,4 +1,5 @@
-import mongoose from 'mongoose'; 
+import mongoose, { Types } from 'mongoose'; 
+import { Priority } from '../types';
  
 var taskSchema = new mongoose.Schema({ 
     name:{ 
@@ -23,14 +24,28 @@ var taskSchema = new mongoose.Schema({
     priority : { 
         type : String, 
         required:true, 
-        enum : ['Baja','Media','Alta'], //opciones cerradas 
+        enum : Priority, //opciones cerradas 
     }, 
     project : { 
         type:mongoose.Schema.Types.ObjectId, 
         ref: 'Project', 
-    } 
+    },
+    assigned : {
+        type:mongoose.Schema.Types.ObjectId, 
+        ref: 'User', 
+    }
 },{ 
     timestamps : true 
 }); 
+
+export type Task = {
+    name : string;
+    description : string;
+    dateExpire : Date;
+    state : boolean;
+    priority : Priority;
+    project : Types.ObjectId;
+    assigned : Types.ObjectId;
+}
  
-export = mongoose.model('Task', taskSchema); 
+export default mongoose.model<Task>('Task', taskSchema); 

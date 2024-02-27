@@ -1,13 +1,14 @@
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom"
 import useProject from "../hooks/useProject";
+import ModalFormTask from "../components/ModalFormTask";
 
 
 const Project = () => {
 
   const {id} = useParams();
 
-  const {getProject, project, loading} = useProject()
+  const {getProject, project, loading, handlwShowModalFormTask} = useProject()
 
   useEffect(() => {
     getProject(id as string)
@@ -47,6 +48,7 @@ const Project = () => {
             <button
               type='button'
               className='text-sm px-5 py-3 w-full md:w-auto rounded-lg uppercase font-bold bg-sky-400 text-white text-center mt-5 flex gap-2 items-center justify-center'
+              onClick={handlwShowModalFormTask}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
@@ -60,7 +62,16 @@ const Project = () => {
 
 
             <div className='bg-white shadow mt-10 rounded-lg'>
+              {
+                project.tasks?.length ?
+                project.tasks.map(task => (
+                  <p>{task.name}</p>
+                ))
+
+                :
                 <p className='text-center my-5 p-10'>No hay tareas en este Project</p>
+              }
+               
             </div>
             
             {true && (
@@ -78,6 +89,7 @@ const Project = () => {
                 </div>
               </>
             )}
+            <ModalFormTask/>
         </>
     )
 

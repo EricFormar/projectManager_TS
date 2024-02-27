@@ -11,6 +11,7 @@ export interface Project {
     description: string;
     dateExpire: string;
     client: string;
+    tasks : Task[];
 }
 
 export interface ProjectContextProps {
@@ -21,11 +22,31 @@ export interface ProjectContextProps {
     getProject: (id: string) => void;
     updateProject : (value : FormDataProject, id : string) => void;
     deleteProject : (id : string) => void;
+    task : Task;
+    showModalFormTask :boolean;
+    handlwShowModalFormTask : () => void;
+    createTask : (value : FormDataTask) => void;
 }
 
-export interface FormDataProject extends Omit<Project, '_id'> {
-
+enum Priority {
+    Baja = 'Baja',
+    Media = 'Media',
+    Alta = 'Alta',
 }
+
+export interface Task {
+    name : string;
+    description : string;
+    dateExpire : string;
+    state : boolean;
+    priority : Priority;
+    project : string;
+    assigned : string;
+}
+
+export interface FormDataProject extends Omit<Project, '_id' | 'tasks'> {}
+
+export interface FormDataTask extends Omit<Task, '_id' | 'state' | 'assigned'> {}
 
 const ProjectContext = createContext<ProjectContextProps>({} as ProjectContextProps)
 
@@ -39,6 +60,10 @@ const ProjectProvider = ({ children }: PropsWithChildren) => {
     const [projects, setProjects] = useState<Project[]>([]);
     const [project, setProject] = useState<Project>({} as Project);
     const [loading, setLoading] = useState(false);
+
+    const [task, setTask] = useState<Task>({} as Task);
+    const [showModalFormTask, setshowModalFormTask] = useState(false)
+    
 
     
     const getToken = () => {
@@ -178,6 +203,34 @@ const ProjectProvider = ({ children }: PropsWithChildren) => {
         }
     }
 
+    /* tasks */
+    const handlwShowModalFormTask = () => {
+        setTask({} as Task);
+        setshowModalFormTask(!showModalFormTask)
+    }
+
+    const createTask = async (value : FormDataTask) => {
+        try {
+
+            const config = getToken();
+            if(!config) return
+
+            const { data } : {data : {ok : boolean, msg : string, task : Task}} = await clientAxios.post(`/tasks`, value, config);
+
+            showToastMessage(data.msg);
+
+            project.tasks = [...project.tasks, data.task]
+            setProject(project)
+            handlwShowModalFormTask()
+            
+        } catch (error) {
+            console.log(error);
+            if (error instanceof Error) {
+                handleShowAlert(axios.isAxiosError(error) ? error.response?.data.msg : error.message)
+            }
+        }
+    }
+
 
     return (
         <ProjectContext.Provider
@@ -188,7 +241,11 @@ const ProjectProvider = ({ children }: PropsWithChildren) => {
                 createProject,
                 getProject,
                 updateProject,
-                deleteProject
+                deleteProject,
+                task,
+                showModalFormTask,
+                handlwShowModalFormTask,
+                createTask
             }}
         >
             {children}

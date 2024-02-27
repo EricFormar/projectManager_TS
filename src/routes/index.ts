@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { changePassword, checked, login, register, sendToken, verifyToken } from '../controllers/authController';
-import { taskChangeState, taskDetail, taskRemove, taskStore, taskUpdate, tasksList } from '../controllers/tasksController';
+import { taskChangeState, taskDetail, taskRemove, taskStore, taskUpdate } from '../controllers/tasksController';
 import { profile } from '../controllers/usersController';
 import { collaboratorAdd, collaboratorRemove, proejectDetail, projectsList, projectRemove, projectStore, projectUpdate } from '../controllers/projectsController';
 import { checkAuth } from '../middlewares';
@@ -33,15 +33,13 @@ router
 /* TAREAS */
 router
   .route('/tasks')
-  .get(tasksList)
-  .post(taskStore)
+  .post(checkAuth,taskStore)
 router
   .route('/tasks/:id')
-    .get(taskDetail)
-    .put(taskUpdate)
-    .delete(taskRemove)
-router
-    .post('/tast/:id/change-state', taskChangeState)
+    .get(checkAuth,taskDetail)
+    .put(checkAuth,taskUpdate)
+    .delete(checkAuth,taskRemove)
+    .post(checkAuth,taskChangeState)
 
 /* USUARIOS */
 router

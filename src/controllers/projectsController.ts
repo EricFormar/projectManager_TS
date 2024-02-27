@@ -37,7 +37,7 @@ export const projectStore = async (req: Request, res: Response) => {
 
         const project = new Project(req.body);
 
-        project.createdBy = req.user._id;
+        project.createdBy = req.user._id as Types.ObjectId;
 
         const projectStore = await project.save();
 
@@ -61,14 +61,20 @@ export const proejectDetail = async (req: Request, res: Response) => {
 
         if (!Types.ObjectId.isValid(id)) throw createError(400, "No es un ID válido");
 
-        const project = await Project.findById(id);
+        const project = await Project.findById(id).populate({
+            path : 'tasks',
+            select : 'name description dateExpire priority state',
+            populate : {
+                path : "assigned",
+                select : "name"
+            }
+        })
 
         if (!project) {
             throw createError(404, "Proyecto no encontrado");
         };
 
-        if (req?.user?._id && req?.user?._id.toString() !== project?.createdBy?.toString()) throw createError(401, 'No tenés la autorización para ver este proyecto')
-
+        if (req?.user?._id && req?.user?._id.toString() !== project?.createdBy?.toString()) throw createError(401, 'No tenés la autorización para ver este proyecto')       
 
         return res.status(200).json({
             ok: true,

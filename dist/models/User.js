@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 const bcryptjs_1 = require("bcryptjs");
 const mongoose_1 = __importDefault(require("mongoose"));
 // Declare the Schema of the Mongo model
@@ -55,4 +56,5 @@ userSchema.methods.checkedPassword = function (password) {
         return yield (0, bcryptjs_1.compare)(password, this.password);
     });
 };
-module.exports = mongoose_1.default.model('User', userSchema);
+//Export the model
+exports.default = mongoose_1.default.model('User', userSchema);

@@ -32,15 +32,13 @@ router
 /* TAREAS */
 router
     .route('/tasks')
-    .get(tasksController_1.tasksList)
-    .post(tasksController_1.taskStore);
+    .post(middlewares_1.checkAuth, tasksController_1.taskStore);
 router
     .route('/tasks/:id')
-    .get(tasksController_1.taskDetail)
-    .put(tasksController_1.taskUpdate)
-    .delete(tasksController_1.taskRemove);
-router
-    .post('/tast/:id/change-state', tasksController_1.taskChangeState);
+    .get(middlewares_1.checkAuth, tasksController_1.taskDetail)
+    .put(middlewares_1.checkAuth, tasksController_1.taskUpdate)
+    .delete(middlewares_1.checkAuth, tasksController_1.taskRemove)
+    .post(middlewares_1.checkAuth, tasksController_1.taskChangeState);
 /* USUARIOS */
 router
     .get('/profile', middlewares_1.checkAuth, usersController_1.profile);

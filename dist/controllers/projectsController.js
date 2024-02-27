@@ -62,7 +62,14 @@ const proejectDetail = (req, res) => __awaiter(void 0, void 0, void 0, function*
         const { id } = req.params;
         if (!mongoose_1.Types.ObjectId.isValid(id))
             throw (0, http_errors_1.default)(400, "No es un ID válido");
-        const project = yield Project_1.default.findById(id);
+        const project = yield Project_1.default.findById(id).populate({
+            path: 'tasks',
+            select: 'name description dateExpire priority state',
+            populate: {
+                path: "assigned",
+                select: "name"
+            }
+        });
         if (!project) {
             throw (0, http_errors_1.default)(404, "Proyecto no encontrado");
         }

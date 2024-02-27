@@ -1,5 +1,5 @@
 import { compare, hash } from 'bcryptjs';
-import mongoose from 'mongoose';
+import mongoose, { InferSchemaType } from 'mongoose';
 
 // Declare the Schema of the Mongo model
 var userSchema = new mongoose.Schema({
@@ -42,5 +42,7 @@ userSchema.pre('save', async function (next) {
     return await compare(password, this.password) 
 }
 
+export type User = InferSchemaType<typeof userSchema>
+
 //Export the model
-export = mongoose.model('User', userSchema);
+export default mongoose.model<User>('User', userSchema);
