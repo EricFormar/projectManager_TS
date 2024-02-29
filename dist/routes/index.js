@@ -35,7 +35,6 @@ router
     .post(middlewares_1.checkAuth, tasksController_1.taskStore);
 router
     .route('/tasks/:id')
-    .get(middlewares_1.checkAuth, tasksController_1.taskDetail)
     .put(middlewares_1.checkAuth, tasksController_1.taskUpdate)
     .delete(middlewares_1.checkAuth, tasksController_1.taskRemove)
     .post(middlewares_1.checkAuth, tasksController_1.taskChangeState);

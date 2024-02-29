@@ -3,6 +3,7 @@ import createError from "http-errors";
 import Project from "../models/Project";
 import { errorResponse } from "../helpers";
 import { Types } from "mongoose";
+import User from "../models/User";
 
 export const projectsList = async (req: Request, res: Response) => {
     try {
@@ -157,9 +158,34 @@ export const projectRemove = async (req: Request, res: Response) => {
 
 export const collaboratorAdd = async (req: Request, res: Response) => {
     try {
+        const { id } = req.params;
+        if (!Types.ObjectId.isValid(id)) throw createError(400, "No es un ID válido");
+
+        const project = await Project.findById(id);    
+        if (!project) throw createError(404, "Proyecto no encontrado");
+    
+        if (req?.user?._id && req?.user?._id.toString() !== project?.createdBy?.toString()) throw createError(401, 'No tenés la autorización para ver este proyecto')
+
+        const { email } = req.body;
+        const user = await User.findOne({ email }).select(
+            "-checked -createdAt -password -token -updatedAt -__v "
+          );
+
+        if (!user) throw createError(404, "Usuario no encontrado");
+
+        if (project.createdBy.toString() === user._id.toString()) throw createError(400, "El Creador del Proyecto no puede ser colaborador");
+
+        if (project.collaborators.includes(user._id)) throw createError(400, "El Usuario ya pertenece al Proyecto");
+
+        project.collaborators.push(user._id);
+        await project.save();
+
+
         return res.status(200).json({
             ok: true,
-            msg: 'Colaborador agregado'
+            msg: 'Colaborador agregado',
+            collaborator : user,
+            project
         })
     } catch (error) {
         console.log(error);

@@ -17,6 +17,7 @@ const http_errors_1 = __importDefault(require("http-errors"));
 const Project_1 = __importDefault(require("../models/Project"));
 const helpers_1 = require("../helpers");
 const mongoose_1 = require("mongoose");
+const User_1 = __importDefault(require("../models/User"));
 const projectsList = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         console.log(req.user);
@@ -150,10 +151,31 @@ const projectRemove = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 });
 exports.projectRemove = projectRemove;
 const collaboratorAdd = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _k, _l, _m;
     try {
+        const { id } = req.params;
+        if (!mongoose_1.Types.ObjectId.isValid(id))
+            throw (0, http_errors_1.default)(400, "No es un ID válido");
+        const project = yield Project_1.default.findById(id);
+        if (!project)
+            throw (0, http_errors_1.default)(404, "Proyecto no encontrado");
+        if (((_k = req === null || req === void 0 ? void 0 : req.user) === null || _k === void 0 ? void 0 : _k._id) && ((_l = req === null || req === void 0 ? void 0 : req.user) === null || _l === void 0 ? void 0 : _l._id.toString()) !== ((_m = project === null || project === void 0 ? void 0 : project.createdBy) === null || _m === void 0 ? void 0 : _m.toString()))
+            throw (0, http_errors_1.default)(401, 'No tenés la autorización para ver este proyecto');
+        const { email } = req.body;
+        const user = yield User_1.default.findOne({ email }).select("-checked -createdAt -password -token -updatedAt -__v ");
+        if (!user)
+            throw (0, http_errors_1.default)(404, "Usuario no encontrado");
+        if (project.createdBy.toString() === user._id.toString())
+            throw (0, http_errors_1.default)(400, "El Creador del Proyecto no puede ser colaborador");
+        if (project.collaborators.includes(user._id))
+            throw (0, http_errors_1.default)(400, "El Usuario ya pertenece al Proyecto");
+        project.collaborators.push(user._id);
+        yield project.save();
         return res.status(200).json({
             ok: true,
-            msg: 'Colaborador agregado'
+            msg: 'Colaborador agregado',
+            collaborator: user,
+            project
         });
     }
     catch (error) {

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { changePassword, checked, login, register, sendToken, verifyToken } from '../controllers/authController';
-import { taskChangeState, taskDetail, taskRemove, taskStore, taskUpdate } from '../controllers/tasksController';
+import { taskChangeState, taskRemove, taskStore, taskUpdate } from '../controllers/tasksController';
 import { profile } from '../controllers/usersController';
 import { collaboratorAdd, collaboratorRemove, proejectDetail, projectsList, projectRemove, projectStore, projectUpdate } from '../controllers/projectsController';
 import { checkAuth } from '../middlewares';
@@ -36,7 +36,6 @@ router
   .post(checkAuth,taskStore)
 router
   .route('/tasks/:id')
-    .get(checkAuth,taskDetail)
     .put(checkAuth,taskUpdate)
     .delete(checkAuth,taskRemove)
     .post(checkAuth,taskChangeState)

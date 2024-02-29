@@ -45,7 +45,7 @@ export type Task = {
     state : boolean;
     priority : Priority;
     project : Types.ObjectId;
-    assigned : Types.ObjectId;
+    assigned? : Types.ObjectId;
 }
  
 export default mongoose.model<Task>('Task', taskSchema); 

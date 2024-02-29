@@ -51,7 +51,7 @@ export type Project = {
     createdBy : Types.ObjectId;
     client : string;
     tasks : Types.Array<Task>;
-    collaborators : Types.Array<User>;
+    collaborators : Types.Array<Types.ObjectId>;
 }
  
 export default  mongoose.model<Project>('Project', projectSchema);

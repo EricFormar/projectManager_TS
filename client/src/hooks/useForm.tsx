@@ -10,8 +10,8 @@ export const useForm = <T extends object> (initialState : T) => {
         }) 
     }; 
  
-    const reset = () => { 
-        setFormValues(initialState) 
+    const reset = (values  = initialState) => { 
+        setFormValues(values) 
     } 
  
     return { 
